@@ -36,6 +36,10 @@ class Generator(ABC):
     def verify_parameters(self):
         pass
 
+    @abstractmethod
+    def next(self):
+        pass
+
     def plot_random_numbers(self, join_points=True):
         _, axes = plt.subplots()
         rand_nums = self.get_random_numbers()
@@ -60,6 +64,7 @@ class LinearCongruentialGenerator(Generator):
         self.a = a
         self.b = b
         self.m = m
+        self.current_xn = seed
         self.verify_parameters()
 
     def verify_parameters(self):
@@ -82,6 +87,10 @@ class LinearCongruentialGenerator(Generator):
 
     def get_random_numbers(self):
         return [x / self.m for x in self.get_xn_sequence()]
+
+    def next(self):
+        self.current_xn = (self.a * self.current_xn + self.b) % self.m
+        return self.current_xn / self.m
 
     @abstractmethod
     def has_max_sequence(self):
@@ -138,6 +147,7 @@ class MiddleSquare(Generator):
     def __init__(self, k: int, seed: int):
         self.k = k
         self.seed = seed
+        self.current_xn = seed
         self.verify_parameters()
 
     def verify_parameters(self):
@@ -170,3 +180,7 @@ class MiddleSquare(Generator):
 
     def get_random_numbers(self):
         return [x / 10**self.k for x in self.get_xn_sequence()]
+
+    def next(self):
+        self.current_xn = self._get_middle(self._fill_zeros(self.current_xn))
+        return self.current_xn / 10**self.k

@@ -7,6 +7,10 @@ class RandomVariable(ABC):
     def get_random_variables(self):
         pass
 
+    @abstractmethod
+    def next(self):
+        pass
+
 
 class DiscreteRandomVariable(RandomVariable):
     def __init__(
@@ -28,6 +32,9 @@ class DiscreteRandomVariable(RandomVariable):
             self._get_random_variable(rn) for rn in self.generator.get_random_numbers()
         ]
 
+    def next(self):
+        return self._get_random_variable(self.generator.next())
+
 
 class UniformDiscreteRandomVariable(DiscreteRandomVariable):
     def __init__(self, generator: Generator, values: list[object]):
@@ -36,7 +43,8 @@ class UniformDiscreteRandomVariable(DiscreteRandomVariable):
 
 
 class UniformContinuousRandomVariable(RandomVariable):
-    def __init__(self, min: float, max: float):
+    def __init__(self, generator: Generator, min: float, max: float):
+        self.generator = generator
         self.min = min
         self.max = max
 
@@ -45,3 +53,6 @@ class UniformContinuousRandomVariable(RandomVariable):
             self.min + (self.max - self.min) * rn
             for rn in generator.get_random_numbers()
         ]
+
+    def next(self):
+        return self.min + (self.max - self.min) * self.generator.next()
