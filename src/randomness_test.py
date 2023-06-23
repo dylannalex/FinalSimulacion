@@ -1,12 +1,18 @@
 import numpy as np
 from matplotlib import pyplot as plt
+from abc import ABC, abstractmethod
 from src import utils
 
 
+class RandomnessTest(ABC):
+    @abstractmethod
+    def run_test(self) -> None:
+        pass
 
-class ChiSquaredTest:
-    def __init__(self, random_numbers: np.ndarray, intervals: int, statistic: float):
-        self.random_numbers = random_numbers
+
+class ChiSquaredTest(RandomnessTest):
+    def __init__(self, random_numbers: list[float], intervals: int, statistic: float):
+        self.random_numbers = np.array(random_numbers)
         self.intervals = intervals
         self.statistic = statistic
         self.x0 = self._get_x0()
@@ -20,10 +26,28 @@ class ChiSquaredTest:
         chi_squared = np.sum((expected_freq - observed_freq) ** 2) / ef
         return chi_squared
 
+    def run_test(self):
+        statistic_text = r"\chi^2_{(\alpha, k=" + f"{self.intervals-1}" + r")}"
 
-class KolmogorovSmirnovTest:
-    def __init__(self, random_numbers: np.ndarray, statistic: float):
-        self.random_numbers = random_numbers
+        utils.print_markdown(
+            r"$\chi^2_0 = \sum_{i=1}^n \frac{({FO}_i - {FE}_i)^2}{{FE}_i} ="
+            + f" {self.x0}$"
+        )
+        utils.print_markdown(f"${statistic_text} = {self.statistic}$")
+
+        if self.x0 < self.statistic:
+            utils.print_markdown(
+                f"$\\chi^2_0 <  {statistic_text} \\Rightarrow$ La hipótesis se acepta."
+            )
+        else:
+            utils.print_markdown(
+                f"$\\chi^2_0 >  {statistic_text} \\Rightarrow$ La hipótesis se rechaza."
+            )
+
+
+class KolmogorovSmirnovTest(RandomnessTest):
+    def __init__(self, random_numbers: list[float], statistic: float):
+        self.random_numbers = np.array(random_numbers)
         self.sorted_random_numbers = np.sort(random_numbers)
         self.statistic = statistic
         self.distance = self._get_distance(self.sorted_random_numbers)
@@ -51,18 +75,18 @@ class KolmogorovSmirnovTest:
         )
 
         if self.distance < self.statistic:
-            utils.print_latex(
+            utils.print_markdown(
                 f"{distance_text} < {statistic_text} $\\Rightarrow$ La hipótesis se acepta."
             )
         else:
-            utils.print_latex(
+            utils.print_markdown(
                 f"{distance_text} > {statistic_text} $\\Rightarrow$ La hipótesis se rechaza."
             )
 
 
-class WaldWolfowitzRunsTest:
-    def __init__(self, random_numbers: np.ndarray, statistic: float):
-        self.random_numbers = random_numbers
+class WaldWolfowitzRunsTest(RandomnessTest):
+    def __init__(self, random_numbers: list[float], statistic: float):
+        self.random_numbers = np.array(random_numbers)
         self.statistic = statistic
         self.runs, self.positive, self.negative = self._get_runs()
         self.z = self._get_z()
@@ -96,21 +120,21 @@ class WaldWolfowitzRunsTest:
         statistic_text = r"$Z_{\alpha/2}$"
 
         print(f"Rachas: {runs_text}")
-        utils.print_latex(f"$b = {len(self.runs)}$ (cantidad de rachas)")
-        utils.print_latex(f"$n_1 = {self.positive}$ (cantidad de números positivos)")
-        utils.print_latex(f"$n_2 = {self.negative}$ (cantidad de números negativos)")
-        utils.print_latex(f"{statistic_text} = {self.statistic}")
-        utils.print_latex(r"$Z_0 = \frac{b - \mu_b}{\sigma_b}" + f" = {self.z}$")
+        utils.print_markdown(f"$b = {len(self.runs)}$ (cantidad de rachas)")
+        utils.print_markdown(f"$n_1 = {self.positive}$ (cantidad de números positivos)")
+        utils.print_markdown(f"$n_2 = {self.negative}$ (cantidad de números negativos)")
+        utils.print_markdown(f"{statistic_text} = {self.statistic}")
+        utils.print_markdown(r"$Z_0 = \frac{b - \mu_b}{\sigma_b}" + f" = {self.z}$")
 
         if np.abs(self.z) <= self.statistic:
-            utils.print_latex(
+            utils.print_markdown(
                 f"-{statistic_text} $\leq Z_0 \leq$ {statistic_text} $\\Rightarrow$ La hipótesis se acepta."
             )
         elif self.z > 0:
-            utils.print_latex(
+            utils.print_markdown(
                 f"$Z_0 >$ {statistic_text} $\\Rightarrow$ La hipótesis se rechaza."
             )
         elif self.z < 0:
-            utils.print_latex(
+            utils.print_markdown(
                 f"$Z_0 <$ -{statistic_text} $\\Rightarrow$ La hipótesis se rechaza."
             )
