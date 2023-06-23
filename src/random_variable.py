@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from typing import Callable
 from src.random_number import Generator
 
 
@@ -56,3 +57,34 @@ class UniformContinuousRandomVariable(RandomVariable):
 
     def next(self):
         return self.min + (self.max - self.min) * self.generator.next()
+
+
+class AcceptanceRejectionVariable(RandomVariable):
+    def __init__(
+        self,
+        generator: Generator,
+        a: float,
+        b: float,
+        f: Callable[[float], float],
+        g: Callable[[float], float],
+        M: float,
+    ):
+        self.generator = generator
+        self.a = a
+        self.b = b
+        self.f = f
+        self.g = g
+        self.M = M
+
+    def get_random_variables(self):
+        raise NotImplementedError(
+            "No se puede generar una lista de variables aleatorias con el método de aceptación y rechazo"
+        )
+
+    def next(self):
+        while True:
+            u1 = self.generator.next()
+            u2 = self.generator.next()
+            x = self.a + (self.b - self.a) * u1
+            if u2 <= self.f(x) / (self.M * self.g(x)):
+                return x
