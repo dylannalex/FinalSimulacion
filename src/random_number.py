@@ -143,7 +143,7 @@ class MultiplicativeCongruentialGenerator(LinearCongruentialGenerator):
         return True
 
 
-class MiddleSquare(Generator):
+class MiddleSquareGenerator(Generator):
     def __init__(self, k: int, seed: int):
         self.k = k
         self.seed = seed

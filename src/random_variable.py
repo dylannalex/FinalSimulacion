@@ -49,10 +49,10 @@ class UniformContinuousRandomVariable(RandomVariable):
         self.min = min
         self.max = max
 
-    def get_random_variables(self, generator: Generator):
+    def get_random_variables(self):
         return [
             self.min + (self.max - self.min) * rn
-            for rn in generator.get_random_numbers()
+            for rn in self.generator.get_random_numbers()
         ]
 
     def next(self):

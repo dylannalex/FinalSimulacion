@@ -3,6 +3,7 @@ from matplotlib import pyplot as plt
 from src import utils
 
 
+
 class ChiSquaredTest:
     def __init__(self, random_numbers: np.ndarray, intervals: int, statistic: float):
         self.random_numbers = random_numbers
