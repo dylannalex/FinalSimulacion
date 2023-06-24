@@ -19,7 +19,11 @@ class DiscreteRandomVariable(RandomVariable):
     ):
         self.generator = generator
         self.values = values
-        self.probabilities = [w / sum(weights) for w in weights]
+        self.weights = weights
+
+    @property
+    def probabilities(self):
+        return [w / sum(self.weights) for w in self.weights]
 
     def _get_random_variable(self, random_number: float):
         cumulative_probability = 0
@@ -27,6 +31,8 @@ class DiscreteRandomVariable(RandomVariable):
             cumulative_probability += probability
             if random_number <= cumulative_probability:
                 return value
+        else:
+            return value
 
     def get_random_variables(self):
         return [

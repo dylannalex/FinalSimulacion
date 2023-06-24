@@ -184,3 +184,26 @@ class MiddleSquareGenerator(Generator):
     def next(self):
         self.current_xn = self._get_middle(self._fill_zeros(self.current_xn))
         return self.current_xn / 10**self.k
+
+
+class NotIndependentGenerator(Generator):
+    def __init__(self, seed: int):
+        self.seed = seed
+        self.current_xn = seed
+
+    def verify_parameters(self):
+        if self.seed < 2:
+            raise ValueError("La semilla debe ser mayor o igual a 2")
+
+    def get_xn_sequence(self):
+        return [i for i in range(self.seed, -1, -1)]
+
+    def get_random_numbers(self):
+        return [x / self.seed for x in self.get_xn_sequence()]
+
+    def next(self):
+        if self.current_xn > 0:
+            self.current_xn -= 1
+        else:
+            self.current_xn = self.seed
+        return self.current_xn / self.seed
