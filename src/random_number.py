@@ -186,7 +186,7 @@ class MiddleSquareGenerator(Generator):
         return self.current_xn / 10**self.k
 
 
-class NotIndependentGenerator(Generator):
+class DependentGenerator(Generator):
     def __init__(self, seed: int):
         self.seed = seed
         self.current_xn = seed
