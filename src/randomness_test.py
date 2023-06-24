@@ -50,7 +50,7 @@ class KolmogorovSmirnovTest(RandomnessTest):
         self.random_numbers = np.array(random_numbers)
         self.sorted_random_numbers = np.sort(random_numbers)
         self.statistic = statistic
-        self.distance = self._get_distance(self.sorted_random_numbers)
+        self.distance = self._get_distance()
 
     def graph(self) -> None:
         n = len(self.sorted_random_numbers)
