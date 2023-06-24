@@ -50,7 +50,7 @@ class KolmogorovSmirnovTest(RandomnessTest):
         self.random_numbers = np.array(random_numbers)
         self.sorted_random_numbers = np.sort(random_numbers)
         self.statistic = statistic
-        self.distance = self._get_distance(self.sorted_random_numbers)
+        self.distance = self._get_distance()
 
     def graph(self) -> None:
         n = len(self.sorted_random_numbers)
@@ -115,7 +115,7 @@ class WaldWolfowitzRunsTest(RandomnessTest):
         z = (total_runs - mean) / np.sqrt(variance)
         return z
 
-    def runs_test(self) -> None:
+    def run_test(self) -> None:
         runs_text = " ".join([str(run) for run in self.runs])
         statistic_text = r"$Z_{\alpha/2}$"
 
