@@ -5,6 +5,11 @@ from src import random_variable
 from src import randomness_test
 
 
+class GeneratorMenu:
+    def next(self):
+        return np.random.rand()
+
+
 def _get_option(title: str, options: dict):
     while True:
         system("cls")
@@ -18,15 +23,19 @@ def _get_option(title: str, options: dict):
             return int(option)
 
 
-class _RandomNumberGeneratorMenu:
+class RandomNumberGeneratorMenu:
     options = {
         "1": "Generador congruencial mixto",
         "2": "Generador congruencial multiplicativo",
         "3": "Generador de cuadrados medios",
+        "4": "Salir",
     }
 
     def menu(self):
         option = _get_option("Generador de números aleatorios", self.options)
+
+        if option == 4:
+            return
 
         if option == 1:
             a = int(input("Ingresar el valor de 'a': "))
@@ -55,15 +64,19 @@ class _RandomNumberGeneratorMenu:
         generator.plot_random_numbers()
 
 
-class _RandomnessTestMenu:
+class RandomnessTestMenu:
     options = {
         "1": "Prueba de Kolmogorov-Smirnov",
         "2": "Prueba de Chi-Cuadrado",
         "3": "Prueba de Corridas",
+        "4": "Salir",
     }
 
     def menu(self):
         option = _get_option("Pruebas de aleatoriedad", self.options)
+
+        if option == 4:
+            return
 
         # Get random numbers
         n = int(input("Ingrese la cantidad de números aleatorios: "))
@@ -77,9 +90,11 @@ class _RandomnessTestMenu:
         # Get Generator
         if option == 1:
             test = randomness_test.KolmogorovSmirnovTest(random_numbers, statistic)
+
         if option == 2:
             intervals = int(input("Ingrese la cantidad de intervalos: "))
             test = randomness_test.ChiSquaredTest(random_numbers, intervals, statistic)
+
         if option == 3:
             test = randomness_test.WaldWolfowitzRunsTest(random_numbers, statistic)
 
@@ -88,28 +103,57 @@ class _RandomnessTestMenu:
         test.run_test()
 
 
-class _RandomVariableGeneratorMenu:
-    def menu(self):
-        raise NotImplementedError
-
-
-class Menu:
+class RandomVariableGeneratorMenu:
     options = {
-        "1": "Generador de números aleatorios",
-        "2": "Generador de variables aleatorias",
-        "3": "Realizar pruebas estadísticas de aleatoriedad",
+        "1": "Variable aleatoria discreta",
+        "2": "Variable aleatoria discreta uniforme",
+        "3": "Variable aleatoria continua uniforme",
+        "4": "Salir",
     }
 
-    def __init__(self):
-        self.random_number_generator_menu = _RandomNumberGeneratorMenu()
-        self.random_variable_generator_menu = _RandomVariableGeneratorMenu()
-        self.randomness_test_menu = _RandomnessTestMenu()
-
     def menu(self):
-        option = _get_option("Menú principal", self.options)
+        option = _get_option("Pruebas de aleatoriedad", self.options)
+
+        if option == 4:
+            return
+
+        total_random_variables = int(
+            input("Ingrese la cantidad de variables aleatorias a generar: ")
+        )
+
+        # Get Generator
         if option == 1:
-            self.random_number_generator_menu.menu()
-        elif option == 2:
-            self.random_variable_generator_menu.menu()
-        elif option == 3:
-            self.randomness_test_menu.menu()
+            print("\nEjemplo de valores ingresados: variable1 variable2 variable3")
+            values = input(
+                "Ingrese los valores de la variable separados por un espacio: "
+            )
+            values = values.split(" ")
+            print("\nEjemplo de pesos ingresados: 1 2 0.5")
+            weights = input(
+                "Ingrese los pesos de la variable separados por un espacio: "
+            )
+            weights = [float(w) for w in weights.split(" ")]
+            rv_generator = random_variable.DiscreteRandomVariable(
+                GeneratorMenu(), values, weights
+            )
+
+        if option == 2:
+            print("\nEjemplo de valores ingresados: variable1 variable2 variable3")
+            values = input(
+                "Ingrese los valores de la variable separados por un espacio: "
+            )
+            values = values.split(" ")
+            rv_generator = random_variable.UniformDiscreteRandomVariable(
+                GeneratorMenu(),
+                values,
+            )
+
+        if option == 3:
+            a = int(input("Ingrese el valor de 'a': "))
+            b = int(input("Ingrese el valor de 'b': "))
+            rv_generator = random_variable.UniformContinuousRandomVariable(
+                GeneratorMenu(), a, b
+            )
+
+        random_variables = [rv_generator.next() for _ in range(total_random_variables)]
+        print(f"Las variables aleatorias generadas son:\n{random_variables}")
