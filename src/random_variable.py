@@ -83,9 +83,16 @@ class AcceptanceRejectionVariable(RandomVariable):
         self.M = M
 
     def get_random_variables(self):
-        raise NotImplementedError(
-            "No se puede generar una lista de variables aleatorias con el método de aceptación y rechazo"
-        )
+        i=0
+        random_variables = []
+        while i < len(self.generator.get_random_numbers()):
+            u1 = self.generator.next()
+            u2 = self.generator.next()
+            x = self.a + (self.b - self.a) * u1
+            if u2 <= self.f(x) / (self.M * self.g(x)):
+                random_variables.append(x) 
+            i+=1
+        return random_variables
 
     def next(self):
         while True:
