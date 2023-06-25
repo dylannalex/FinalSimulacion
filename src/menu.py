@@ -55,7 +55,7 @@ class RandomNumberGeneratorMenu:
         elif option == 3:
             k = int(input("Ingresar el valor de 'k': "))
             x0 = int(input("Ingresar el valor de 'x0': "))
-            generator = random_number.MiddleSquare(seed=x0, k=k)
+            generator = random_number.MiddleSquareGenerator(seed=x0, k=k)
 
         print("Resultado:")
         print(f"La secuencia generada es: {generator}")
