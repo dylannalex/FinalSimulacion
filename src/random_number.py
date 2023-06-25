@@ -57,6 +57,9 @@ class Generator(ABC):
         str_random_nums = [str(x) for x in self.get_random_numbers()]
         return " ".join(str_random_nums)
 
+    def reset(self):
+        self.current_xn = self.seed
+
 
 class LinearCongruentialGenerator(Generator):
     def __init__(self, seed: int, a: int, b: int, m: int):
@@ -64,6 +67,7 @@ class LinearCongruentialGenerator(Generator):
         self.a = a
         self.b = b
         self.m = m
+        self.seed = seed
         self.current_xn = seed
         self.verify_parameters()
 
@@ -207,3 +211,6 @@ class DependentGenerator(Generator):
         else:
             self.current_xn = self.seed
         return self.current_xn / self.seed
+
+    def __len__(self):
+        return self.seed + 1
