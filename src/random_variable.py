@@ -50,19 +50,19 @@ class UniformDiscreteRandomVariable(DiscreteRandomVariable):
 
 
 class UniformContinuousRandomVariable(RandomVariable):
-    def __init__(self, generator: Generator, min: float, max: float):
+    def __init__(self, generator: Generator, a: float, b: float):
         self.generator = generator
-        self.min = min
-        self.max = max
+        self.a = a
+        self.b = b
 
     def get_random_variables(self):
         return [
-            self.min + (self.max - self.min) * rn
+            self.a + (self.b - self.a) * rn
             for rn in self.generator.get_random_numbers()
         ]
 
     def next(self):
-        return self.min + (self.max - self.min) * self.generator.next()
+        return self.a + (self.b - self.a) * self.generator.next()
 
 
 class AcceptanceRejectionVariable(RandomVariable):
