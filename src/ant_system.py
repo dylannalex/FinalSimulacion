@@ -129,7 +129,14 @@ class AntSystem:
                 1 / self._cycle_best_solution_cost
             )
 
+    def _refresh_result(self):
+        self.best_solution = None
+        self.best_solution_cost = np.inf
+        self._cycle_best_solution = None
+        self._cycle_best_solution_cost = np.inf
+
     def run(self, max_cycles: int, verbose: bool = False):
+        self._refresh_result()
         for i in range(max_cycles):
             self.initialization()
             self.cycle()

@@ -115,7 +115,7 @@ class WaldWolfowitzRunsTest(RandomnessTest):
         z = (total_runs - mean) / np.sqrt(variance)
         return z
 
-    def runs_test(self) -> None:
+    def run_test(self) -> None:
         runs_text = " ".join([str(run) for run in self.runs])
         statistic_text = r"$Z_{\alpha/2}$"
 
